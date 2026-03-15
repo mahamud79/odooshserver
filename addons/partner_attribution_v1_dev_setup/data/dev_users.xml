@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Dev tester partner -->
+    <record id="partner_dev_tester" model="res.partner">
+        <field name="name">Dev Tester</field>
+        <field name="email">dev.tester@redxpider.local</field>
+        <field name="is_company">False</field>
+    </record>
+
+    <!-- Dev tester user -->
+    <record id="user_dev_tester" model="res.users">
+        <field name="name">Dev Tester</field>
+        <field name="login">dev.tester</field>
+        <field name="email">dev.tester@redxpider.local</field>
+        <field name="partner_id" ref="partner_dev_tester"/>
+
+        <!-- Password for DEV only -->
+        <field name="password">Dev@12345</field>
+
+        <!-- Give admin access in dev (simple for testing) -->
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+</odoo>

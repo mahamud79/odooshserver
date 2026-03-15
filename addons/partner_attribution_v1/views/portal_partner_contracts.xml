@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+    <data>
+<template id="portal_partner_contracts" name="Partner Portal Contracts">
+    <t t-call="website.layout">
+      <div class="container py-5" style="max-width: 980px;">
+        <h1 class="mb-3">Contracts</h1>
+
+        <t t-if="not template">
+          <div class="alert alert-warning">
+            No contract is assigned to your account yet.
+          </div>
+        </t>
+
+        <t t-if="template">
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between flex-wrap gap-2">
+                <div>
+                  <div><strong>Contract:</strong> <span t-esc="template.name"/></div>
+                  <div><strong>Version:</strong> <span t-esc="template.version"/></div>
+                  <div t-if="template.effective_date"><strong>Effective:</strong> <span t-esc="template.effective_date"/></div>
+                </div>
+
+                <div class="d-flex gap-2 align-items-start">
+                  <t t-set="contract_dl_url"
+                     t-value="'/web/content/%s?download=true%s' % (template.attachment_id.id, (template.attachment_id.access_token and ('&amp;access_token=%s' % template.attachment_id.access_token)) or '')"/>
+
+                  <a class="btn btn-outline-primary"
+                     t-att-href="contract_dl_url">
+                    Download PDF
+                  </a>
+                </div>
+              </div>
+
+              <hr/>
+
+              <t t-if="acceptance and acceptance.template_id.id == template.id">
+                <div class="alert alert-success mb-0">
+                  Accepted on <strong><span t-esc="acceptance.accepted_on"/></strong>
+                  <span t-if="acceptance.accepted_ip"> from IP <strong><span t-esc="acceptance.accepted_ip"/></strong></span>.
+                </div>
+              </t>
+
+              <t t-else="">
+                <form action="/partners/portal/contracts/accept" method="post" class="d-flex align-items-center gap-2">
+                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                  <button type="submit" class="btn btn-primary">
+                    Accept Contract
+                  </button>
+                  <span class="text-muted">By accepting, you agree to the terms in the PDF above.</span>
+                </form>
+              </t>
+
+            </div>
+          </div>
+        </t>
+
+        <div class="mt-4">
+          <a class="btn btn-outline-secondary" href="/partners/portal">Back to Portal</a>
+        </div>
+      </div>
+    </t>
+  </template>
+    </data>
+</odoo>

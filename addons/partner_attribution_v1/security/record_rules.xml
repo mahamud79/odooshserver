@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =========================
+         Portal record rules (ROLE + OWN/COMMERCIAL ONLY)
+         ========================= -->
+
+    <!-- Ledger: portal can only read own/commercial ledger lines -->
+    <record id="rule_partner_ledger_portal_own" model="ir.rule">
+        <field name="name">Portal: Ledger own only</field>
+        <field name="model_id" ref="partner_attribution_v1.model_partner_attribution_ledger"/>
+        <field name="domain_force">[('partner_id', 'in', [user.partner_id.id, user.partner_id.commercial_partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Attachments: portal can only read/create attachments linked to own/commercial partner -->
+    <record id="rule_partner_attachment_portal_own" model="ir.rule">
+        <field name="name">Portal: Partner documents own only</field>
+        <field name="model_id" ref="base.model_ir_attachment"/>
+        <field name="domain_force">[('res_model','=','res.partner'),('res_id','in',[user.partner_id.id,user.partner_id.commercial_partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Leads: ONLY role=lead -->
+    <record id="rule_partner_leads_portal_role_scoped" model="ir.rule">
+        <field name="name">Portal: Leads only for lead-role</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">
+            (user.partner_id.partner_role == 'lead'
+              and [('attributed_partner_id','in',[user.partner_id.id,user.partner_id.commercial_partner_id.id])]
+              or [('id','=',0)])
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Sale Orders: roles ap/sales_agent/sales_partner -->
+    <record id="rule_partner_sale_orders_portal_role_scoped" model="ir.rule">
+        <field name="name">Portal: Sale Orders attributed to partner (role scoped)</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">
+            (user.partner_id.partner_role in ('ap','sales_agent','sales_partner')
+              and [('attributed_partner_id','in',[user.partner_id.id,user.partner_id.commercial_partner_id.id])]
+              or [('id','=',0)])
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Invoices: ONLY role=ap -->
+    <record id="rule_partner_invoices_portal_role_scoped" model="ir.rule">
+        <field name="name">Portal: Invoices attributed to partner (AP only)</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">
+            (user.partner_id.partner_role == 'ap'
+              and [('move_type','in',['out_invoice','out_refund']),
+                   ('state','=','posted'),
+                   ('attributed_partner_id','in',[user.partner_id.id,user.partner_id.commercial_partner_id.id])]
+              or [('id','=',0)])
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Pricelist: ONLY role=sales_partner -->
+    <record id="rule_partner_pricelist_portal_role_scoped" model="ir.rule">
+        <field name="name">Portal: Pricelist (Sales Partner only)</field>
+        <field name="model_id" ref="product.model_product_pricelist"/>
+        <field name="domain_force">
+            ((user.partner_id.partner_role == 'sales_partner' and user.partner_id.property_product_pricelist)
+              and [('id','=',user.partner_id.property_product_pricelist.id)]
+              or [('id','=',0)])
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Pricelist Items: ONLY role=sales_partner -->
+    <record id="rule_partner_pricelist_item_portal_role_scoped" model="ir.rule">
+        <field name="name">Portal: Pricelist Items (Sales Partner only)</field>
+        <field name="model_id" ref="product.model_product_pricelist_item"/>
+        <field name="domain_force">
+            ((user.partner_id.partner_role == 'sales_partner' and user.partner_id.property_product_pricelist)
+              and [('pricelist_id','=',user.partner_id.property_product_pricelist.id)]
+              or [('id','=',0)])
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Contract Template: portal can only read the template assigned to their commercial partner -->
+    <record id="rule_partner_contract_template_portal_assigned" model="ir.rule">
+        <field name="name">Portal: Contract Template (assigned only)</field>
+        <field name="model_id" ref="partner_attribution_v1.model_partner_contract_template"/>
+        <field name="domain_force">
+            ((user.partner_id.commercial_partner_id.contract_template_id)
+              and [('id','=', user.partner_id.commercial_partner_id.contract_template_id.id)]
+              or [('id','=',0)])
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Contract Acceptance: portal can only read acceptances for their own/commercial partner -->
+    <record id="rule_partner_contract_acceptance_portal_own" model="ir.rule">
+        <field name="name">Portal: Contract Acceptance (own only)</field>
+        <field name="model_id" ref="partner_attribution_v1.model_partner_contract_acceptance"/>
+        <field name="domain_force">[('partner_id','in',[user.partner_id.id, user.partner_id.commercial_partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+</odoo>

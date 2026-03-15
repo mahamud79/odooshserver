@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_inherit_partner_attribution_v1" model="ir.ui.view">
+        <field name="name">res.partner.form.partner_attribution_v1</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+
+                <button name="action_approve_partner"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-check"
+                        groups="partner_attribution_v1.group_partner_attr_officer,partner_attribution_v1.group_partner_attr_manager"
+                        invisible="partner_state == 'approved'">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Approve</span>
+                    </div>
+                </button>
+
+                <button name="action_reset_to_draft"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-undo"
+                        groups="partner_attribution_v1.group_partner_attr_officer,partner_attribution_v1.group_partner_attr_manager"
+                        invisible="partner_state != 'approved'">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Reset</span>
+                    </div>
+                </button>
+
+                <button name="action_generate_portal_invite_link"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-link"
+                        groups="partner_attribution_v1.group_partner_attr_officer,partner_attribution_v1.group_partner_attr_manager"
+                        invisible="not email">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Invite Link</span>
+                    </div>
+                </button>
+
+                <button name="action_generate_partner_contract"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-pdf-o"
+                        groups="partner_attribution_v1.group_partner_attr_officer,partner_attribution_v1.group_partner_attr_manager"
+                        invisible="partner_state != 'approved'">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Contract</span>
+                    </div>
+                </button>
+
+            </xpath>
+
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Partner Attribution"
+                      groups="partner_attribution_v1.group_partner_attr_officer,partner_attribution_v1.group_partner_attr_manager">
+
+                    <group>
+                        <group string="Partner System (v1)">
+                            <field name="partner_state" readonly="1"/>
+                            <field name="partner_role" readonly="partner_state == 'approved'"/>
+                            <field name="partner_uid" readonly="1"/>
+                            <field name="partner_code" readonly="1"/>
+                            
+                            <field name="currency_id" invisible="1"/>
+
+                            <separator string="Commission Settings"/>
+                            <field name="commission_rate" 
+                                   invisible="partner_role not in ('ap', 'sales_agent')"/>
+                            <field name="lead_reward_amount" 
+                                   invisible="partner_role != 'lead'"/>
+
+                            <separator string="Admin View"/>
+                            <field name="compliance_missing" readonly="1"/>
+                        </group>
+
+                        <group string="Portal Access">
+                            <field name="email"/>
+                            <field name="portal_invite_url" readonly="1"/>
+                            <field name="signup_url" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Company / Tax">
+                            <field name="vat"/>
+                            <field name="coc_number"/>
+                            <field name="irs_tax_ref"/>
+                            <field name="vat_verified"/>
+                            <field name="vat_verified_on" readonly="1"/>
+                            <field name="company_verified"/>
+                            <field name="company_verified_on" readonly="1"/>
+                        </group>
+
+                        <group string="KYC">
+                            <field name="kyc_status"/>
+                            <field name="kyc_blocked"/>
+                            <field name="kyc_verified_on" readonly="1"/>
+                            <field name="bank_verified"/>
+                            <field name="bank_verified_on" readonly="1"/>
+                            <field name="kyc_note"/>
+                        </group>
+                    </group>
+
+                    <group string="Bank Accounts">
+                        <field name="bank_ids" context="{'default_partner_id': id}" nolabel="1" colspan="2"/>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

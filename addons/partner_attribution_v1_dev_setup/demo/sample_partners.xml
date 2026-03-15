@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="partner_sample_a" model="res.partner">
+        <field name="name">Sample Partner A</field>
+        <field name="email">sampleA@example.com</field>
+        <field name="phone">+8801000000001</field>
+        <field name="is_company">True</field>
+    </record>
+
+    <record id="partner_sample_b" model="res.partner">
+        <field name="name">Sample Partner B</field>
+        <field name="email">sampleB@example.com</field>
+        <field name="phone">+8801000000002</field>
+        <field name="is_company">True</field>
+    </record>
+
+</odoo>

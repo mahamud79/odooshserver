@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+    <data>
+<template id="portal_partner_pricelist" name="Partner Portal Pricelist">
+    <t t-call="portal.portal_layout">
+      <div class="container o_portal_wrap py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h1 class="mb-0">Pricelist</h1>
+          <a class="btn btn-outline-secondary" href="/partners/portal">Back</a>
+        </div>
+
+        <t t-if="pricelist">
+          <div class="card mb-3">
+            <div class="card-body">
+              <div><strong>Pricelist:</strong> <t t-esc="pricelist.name"/></div>
+              <div class="text-muted small">Assigned to your partner profile.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Pricelist Items</h5>
+              <t t-if="items and len(items) &gt; 0">
+                <div class="table-responsive">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Applies To</th>
+                        <th>Min Qty</th>
+                        <th>Price / Discount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <t t-foreach="items" t-as="it">
+                        <tr>
+                          <td>
+                            <t t-if="it.product_tmpl_id"><t t-esc="it.product_tmpl_id.name"/></t>
+                            <t t-elif="it.product_id"><t t-esc="it.product_id.display_name"/></t>
+                            <t t-else="">All Products</t>
+                          </td>
+                          <td><t t-esc="it.min_quantity or 0.0"/></td>
+                          <td>
+                            <t t-if="it.compute_price == 'fixed'">
+                              Fixed: <t t-esc="it.fixed_price"/>
+                            </t>
+                            <t t-elif="it.compute_price == 'percentage'">
+                              Discount: <t t-esc="it.percent_price"/>%
+                            </t>
+                            <t t-else="">
+                              Rule
+                            </t>
+                          </td>
+                        </tr>
+                      </t>
+                    </tbody>
+                  </table>
+                </div>
+              </t>
+              <t t-else="">
+                <div class="alert alert-secondary mb-0">No items configured for your pricelist.</div>
+              </t>
+            </div>
+          </div>
+        </t>
+
+        <t t-else="">
+          <div class="alert alert-warning">
+            No pricelist assigned to your account.
+          </div>
+        </t>
+
+      </div>
+    </t>
+  </template>
+    </data>
+</odoo>

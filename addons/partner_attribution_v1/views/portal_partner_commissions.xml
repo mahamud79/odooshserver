@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+    <data>
+<template id="portal_partner_commissions" name="Partner Portal Commissions">
+    <t t-call="portal.portal_layout">
+      <div class="container o_portal_wrap py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h1 class="mb-0">Commissions</h1>
+          <a class="btn btn-outline-secondary" href="/partners/portal">Back</a>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-4">
+            <div class="card h-100"><div class="card-body">
+              <div class="text-muted small">On Hold</div>
+              <div class="fs-4 fw-semibold"><t t-esc="('%.2f' % (on_hold_amount or 0.0))"/></div>
+            </div></div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card h-100"><div class="card-body">
+              <div class="text-muted small">Payable</div>
+              <div class="fs-4 fw-semibold"><t t-esc="('%.2f' % (payable_amount or 0.0))"/></div>
+            </div></div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card h-100"><div class="card-body">
+              <div class="text-muted small">Paid</div>
+              <div class="fs-4 fw-semibold"><t t-esc="('%.2f' % (paid_amount or 0.0))"/></div>
+            </div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Ledger</h5>
+            <t t-if="lines and len(lines) &gt; 0">
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Invoice</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Hold Reason</th>
+                      <th>Commission</th>
+                      <th>Vendor Bill</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <t t-foreach="lines" t-as="l">
+                      <tr>
+                        <td><t t-esc="l.invoice_id.name if l.invoice_id else ''"/></td>
+                        <td><t t-esc="l.entry_type"/></td>
+                        <td><t t-esc="l.state"/></td>
+                        <td><t t-esc="getattr(l, 'hold_reason', '') or ''"/></td>
+                        <td><t t-esc="('%.2f' % (l.commission_amount or 0.0))"/></td>
+                        <td>
+                          <t t-if="l.vendor_bill_id">
+                            <t t-set="bill_url" t-value="'/my/invoices/%s' % l.vendor_bill_id.id"/>
+                            <a t-att-href="bill_url">Open</a>
+                          </t>
+                          <t t-else="">—</t>
+                        </td>
+                      </tr>
+                    </t>
+                  </tbody>
+                </table>
+              </div>
+            </t>
+            <t t-else="">
+              <div class="alert alert-secondary mb-0">No commission entries yet.</div>
+            </t>
+          </div>
+        </div>
+
+      </div>
+    </t>
+  </template>
+    </data>
+</odoo>

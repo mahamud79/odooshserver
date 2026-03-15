@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <template id="portal_partner_kyc" name="Partner Portal KYC">
+      <t t-call="website.layout">
+        <div class="container py-5" style="max-width: 980px;">
+          <h1 class="mb-3">Profile &amp; Compliance (KYC)</h1>
+
+          <div class="alert alert-info">
+            <div><strong>Status:</strong> <span t-esc="partner.kyc_status"/></div>
+            <div><strong>Compliance Missing:</strong> <span t-esc="partner.compliance_missing"/></div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="card-body">
+              <form action="/partners/portal/kyc/save" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label">Full Name</label>
+                    <input class="form-control" type="text" name="name" t-att-value="partner.name or ''"/>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="text" name="phone" t-att-value="partner.phone or ''"/>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label class="form-label">VAT / Tax ID</label>
+                    <input class="form-control" type="text" name="vat" t-att-value="partner.vat or ''"/>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label">CoC Number</label>
+                    <input class="form-control" type="text" name="coc_number" t-att-value="partner.coc_number or ''"/>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label class="form-label">IRS / Tax Ref</label>
+                    <input class="form-control" type="text" name="irs_tax_ref" t-att-value="partner.irs_tax_ref or ''"/>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label">IBAN</label>
+                    <input class="form-control" type="text" name="iban"
+                           t-att-value="(bank and bank.acc_number) or ''"
+                           placeholder="e.g. NL91ABNA0417164300"/>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                  <button class="btn btn-outline-primary" type="submit" name="save_only" value="1">Save</button>
+                  <button class="btn btn-primary" type="submit" name="submit_kyc" value="1">Submit for Review</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="mb-3">Documents</h5>
+              
+              <form action="/partners/portal/kyc/upload" method="post" enctype="multipart/form-data" class="d-flex gap-2">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input class="form-control" type="file" name="document" required="required" accept=".pdf,.png,.jpg,.jpeg"/>
+                <button class="btn btn-primary" type="submit">Upload</button>
+              </form>
+              <p class="text-muted mt-2 mb-0">Upload company registration, bank proof, and required compliance documents.</p>
+
+              <t t-set="uploaded_docs" t-value="request.env['ir.attachment'].sudo().search([('res_model', '=', 'res.partner'), ('res_id', '=', partner.id)])"/>
+              <t t-if="uploaded_docs">
+                <hr class="mt-4 mb-3"/>
+                <h6 class="mb-2 fw-bold text-success">Successfully Uploaded:</h6>
+                <ul class="list-group list-group-flush mb-0">
+                  <t t-foreach="uploaded_docs" t-as="doc">
+                    <li class="list-group-item px-0 py-1 border-0 bg-transparent text-success">
+                      <i class="fa fa-check-circle me-2"></i> <span t-esc="doc.name"/>
+                    </li>
+                  </t>
+                </ul>
+              </t>
+              
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" href="/partners/portal">Back to Portal</a>
+            <a class="btn btn-outline-secondary" href="/partners/portal/contracts">Contracts</a>
+          </div>
+        </div>
+      </t>
+    </template>
+  </data>
+</odoo>

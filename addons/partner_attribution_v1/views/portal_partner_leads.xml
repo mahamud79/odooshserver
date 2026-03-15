@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="portal_partner_leads" name="Partner Portal Leads">
+            <t t-call="portal.portal_layout">
+                <div class="container o_portal_wrap py-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="mb-0">Opportunity Submission</h1>
+                        <a class="btn btn-outline-secondary" href="/partners/portal">
+                            <i class="fa fa-chevron-left me-1"/> Back to Dashboard
+                        </a>
+                    </div>
+
+                    <div class="card mb-4 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold">Submit a New Lead</h5>
+                            <p class="text-muted small mb-4">Direct SQL Bypass active: This record will appear immediately in the CRM pipeline.</p>
+                            
+                            <form action="/partners/portal/leads/submit" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label fw-bold">Lead/Opportunity Title</label>
+                                        <input class="form-control" type="text" name="name" required="required" placeholder="e.g. Enterprise Cloud Project"/>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label fw-bold">Contact Name</label>
+                                        <input class="form-control" type="text" name="contact_name" placeholder="John Doe"/>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label fw-bold">Client Email</label>
+                                        <input class="form-control" type="email" name="email_from" placeholder="client@example.com"/>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label fw-bold">Client Phone</label>
+                                        <input class="form-control" type="text" name="phone" placeholder="+1 555-0199"/>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Additional Project Details</label>
+                                        <textarea class="form-control" name="description" rows="4" placeholder="Briefly describe the client needs..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="mt-4 d-flex justify-content-end">
+                                    <button class="btn btn-primary px-5 py-2 fw-bold" type="submit">
+                                        Submit Lead to CRM
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold mb-3">My Submitted Leads</h5>
+                            <t t-if="leads">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Contact</th>
+                                                <th>Stage</th>
+                                                <th class="text-end">Created</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="leads" t-as="l">
+                                                <tr>
+                                                    <td class="fw-bold text-primary"><t t-esc="l.name"/></td>
+                                                    <td><t t-esc="l.email_from or 'No Email'"/></td>
+                                                    <td>
+                                                        <span class="badge rounded-pill bg-info text-dark">
+                                                            <t t-esc="l.stage_id.name if l.stage_id else 'New'"/>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end text-muted">
+                                                        <span t-field="l.create_date" t-options='{"widget": "date"}'/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="alert alert-light border-0 mb-0 text-center py-4">
+                                    <i class="fa fa-folder-open-o fa-2x mb-2 text-muted"/><br/>
+                                    No leads have been submitted by your account yet.
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

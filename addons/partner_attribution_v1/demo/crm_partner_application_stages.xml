@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="crm_team_partner_applications" model="crm.team">
+        <field name="name">Partner Applications</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">False</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Partner Application Screening Stages (team-specific)
+
+    NOTE (Odoo 18): crm.stage no longer has a 'type' field.
+    Keeping it would crash demo installation with:
+      ValueError: Invalid field 'type' on model 'crm.stage'
+    Demo data must never break module installation on Odoo.sh.
+    -->
+    <record id="crm_stage_partner_app_new" model="crm.stage">
+        <field name="name">New Application</field>
+        <field name="sequence">5</field>
+        <field name="team_id" ref="crm_team_partner_applications"/>
+    </record>
+
+    <record id="crm_stage_partner_app_screening" model="crm.stage">
+        <field name="name">Screening</field>
+        <field name="sequence">10</field>
+        <field name="team_id" ref="crm_team_partner_applications"/>
+    </record>
+
+    <record id="crm_stage_partner_app_approved" model="crm.stage">
+        <field name="name">Approved</field>
+        <field name="sequence">90</field>
+        <field name="team_id" ref="crm_team_partner_applications"/>
+        <field name="is_won">True</field>
+        <field name="fold">True</field>
+    </record>
+
+    <record id="crm_stage_partner_app_rejected" model="crm.stage">
+        <field name="name">Rejected</field>
+        <field name="sequence">95</field>
+        <field name="team_id" ref="crm_team_partner_applications"/>
+        <field name="fold">True</field>
+    </record>
+
+</odoo>

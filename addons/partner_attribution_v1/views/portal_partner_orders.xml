@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+    <data>
+<template id="portal_partner_orders" name="Partner Portal Orders">
+    <t t-call="portal.portal_layout">
+      <div class="container o_portal_wrap py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h1 class="mb-0">Orders</h1>
+          <a class="btn btn-outline-secondary" href="/partners/portal">Back</a>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Attributed Orders</h5>
+            <t t-if="orders and len(orders) &gt; 0">
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Customer</th>
+                      <th>Status</th>
+                      <th>Total</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <t t-foreach="orders" t-as="o">
+                      <tr>
+                        <td><t t-esc="o.name"/></td>
+                        <td><t t-esc="o.partner_id.display_name if o.partner_id else ''"/></td>
+                        <td><t t-esc="o.state"/></td>
+                        <td>
+                          <t t-esc="o.currency_id.symbol if o.currency_id else ''"/>
+                          <t t-esc="('%.2f' % o.amount_total)"/>
+                        </td>
+                        <td><t t-esc="o.date_order"/></td>
+                      </tr>
+                    </t>
+                  </tbody>
+                </table>
+              </div>
+            </t>
+            <t t-else="">
+              <div class="alert alert-secondary mb-0">No orders found.</div>
+            </t>
+          </div>
+        </div>
+
+      </div>
+    </t>
+  </template>
+    </data>
+</odoo>

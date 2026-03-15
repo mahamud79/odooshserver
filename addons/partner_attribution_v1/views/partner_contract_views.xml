@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Contract Template -->
+  <record id="view_partner_contract_template_tree" model="ir.ui.view">
+    <field name="name">partner.contract.template.list</field>
+    <field name="model">partner.contract.template</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="name"/>
+        <field name="partner_role"/>
+        <field name="version"/>
+        <field name="effective_date"/>
+        <field name="active"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_partner_contract_template_form" model="ir.ui.view">
+    <field name="name">partner.contract.template.form</field>
+    <field name="model">partner.contract.template</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <field name="active"/>
+            <field name="name"/>
+            <field name="partner_role"/>
+            <field name="version"/>
+            <field name="effective_date"/>
+            <field name="attachment_id" options="{'no_create': False}"/>
+            <field name="note"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_partner_contract_templates" model="ir.actions.act_window">
+    <field name="name">Contract Templates</field>
+    <field name="res_model">partner.contract.template</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Acceptance -->
+  <record id="view_partner_contract_acceptance_tree" model="ir.ui.view">
+    <field name="name">partner.contract.acceptance.list</field>
+    <field name="model">partner.contract.acceptance</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="partner_id"/>
+        <field name="template_id"/>
+        <field name="version"/>
+        <field name="accepted_on"/>
+        <field name="accepted_ip"/>
+        <field name="accepted_user_id"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="action_partner_contract_acceptances" model="ir.actions.act_window">
+    <field name="name">Contract Acceptances</field>
+    <field name="res_model">partner.contract.acceptance</field>
+    <field name="view_mode">list</field>
+  </record>
+
+</odoo>
